@@ -1,0 +1,18 @@
+{
+  "icon": "moon.stars.fill",
+  "color": "#34C759",
+  "name": "Horaires de prière",
+  "version": "1.0.0",
+  "description": "Prayer times widget (small, medium, Lock Screen) in a native Apple style. Mantes-la-Jolie by default, up to 5 Mawaqit mosques, Jumu'a times, System / Sky / Blur styles. Times are kept offline and refreshed each night.",
+  "localizedNames": {
+    "fr": "Horaires de prière"
+  },
+  "localizedDescriptions": {
+    "fr": "Widget d'horaires de prière (petit, moyen, écran verrouillé) au style Apple. Mantes-la-Jolie par défaut, jusqu'à 5 mosquées Mawaqit, horaires de Jumu'a, styles Système / Ciel / Flou. Horaires gardés hors ligne et mis à jour chaque nuit."
+  },
+  "author": {
+    "name": "Dawajja",
+    "email": "",
+    "homepage": "https://github.com/Dawajja"
+  }
+}
