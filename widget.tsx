@@ -286,16 +286,17 @@ function Countdown({ s, size, color, width, side = "trailing", weight = "regular
 }
 
 // Icônes dessinées, sur une grille de 16 × 16 (même tracé que dans le simulateur).
-// Épaisseur unique (en points) de tous les traits des icônes
-const ICON_STROKE = 1.2
+// Épaisseur de tous les traits des icônes, en unités de la grille de 16 : elle suit la taille de
+// l'icône, comme la graisse « Medium » des symboles d'Apple (≈ 0,086 × la taille de police).
+const ICON_STROKE = 1.1
 function CustomIcon({ kind, box, color: tint }: any) {
   // Les traits se chevauchent par endroits (pointe de la flèche, bouts des rayons). Avec une couleur
   // transparente (gris du fond flou), ces chevauchements ressortiraient plus clairs. L'icône est donc
   // dessinée en blanc plein comme pochoir, puis remplie d'un seul aplat de sa couleur.
   const color = "#FFFFFF"
   const u = box / 16
-  // même épaisseur de trait pour tous les traits de toutes les icônes, quelle que soit leur taille
-  const W = ICON_STROKE / u
+  // même graisse (Medium) pour tous les traits de toutes les icônes, à toutes les tailles
+  const W = ICON_STROKE
   // place un élément centré sur (cx, cy) de la grille
   const at = (cx: number, cy: number, w: number, h: number, child: any) =>
     <ZStack frame={{ width: w * u, height: h * u }} offset={{ x: (cx - 8) * u, y: (cy - 8) * u }}>{child}</ZStack>
@@ -329,11 +330,11 @@ function CustomIcon({ kind, box, color: tint }: any) {
         <Circle fill={color} frame={{ width: 6.2 * u, height: 6.2 * u }} />
       </VStack>)
     const rays = [ray(2.3, 9.5, 3.6, 9.5), ray(12.4, 9.5, 13.7, 9.5), ray(3.9, 5.7, 4.9, 6.8), ray(12.1, 5.7, 11.1, 6.8)]
-    // flèche d'un seul tenant (symbole d'Apple) : trois traits qui se rejoignent se chevauchaient à la
-    // pointe, et en fond flou ce chevauchement ressortait plus blanc. Même hauteur (2,2 → 6,1) et même graisse.
-    const arrow = [at(8, 4.15, 4, 4.4,
-      <Image systemName={kind === "chourouk" ? "arrow.up" : "arrow.down"} font={4.4 * u} fontWeight="semibold"
-        foregroundStyle={color} frame={{ width: 4 * u, height: 4.4 * u }} />)]
+    // flèche au même trait que le reste. Tête ouverte (branches à ~50°) : plus fermée, la jonction
+    // des trois traits faisait un pâté plus clair à la pointe.
+    const arrow = kind === "chourouk"
+      ? [ray(8, 6.2, 8, 2.0), ray(6.25, 3.45, 8, 2.0), ray(9.75, 3.45, 8, 2.0)]
+      : [ray(8, 2.0, 8, 6.2), ray(6.25, 4.75, 8, 6.2), ray(9.75, 4.75, 8, 6.2)]
     parts = [sun, horizon, ...rays, ...arrow]
   }
   return <Rectangle fill={tint} frame={{ width: box, height: box }}
@@ -347,15 +348,15 @@ function iconInset(name: string, size: number) {
   const n = (ICONS[name] || "").replace("custom:", ""), u = size * 1.25 / 16
   const grid: Record<string, number> = { fajr: 1.6, chourouk: 1.6, maghrib: 1.6, duhr: 1.4, asr: 2.5 }
   if (!(n in grid)) return 0
-  return Math.max(0, grid[n] * u - (n === "duhr" || n === "asr" ? ICON_STROKE / 2 : 0))
+  return Math.max(0, (grid[n] - (n === "duhr" || n === "asr" ? ICON_STROKE / 2 : 0)) * u)
 }
 
 // Icône d'un moment : dessinée (Fajr, Chourouk, Duhr, Asr, Maghrib) ou celle d'Apple (Isha, SF Symbol).
-// Jamais de graisse ajoutée : le trait reste fin à toutes les tailles.
+// Toutes en graisse Medium, comme les symboles d'Apple : le trait suit la taille de l'icône.
 function Icon({ name, size, color }: any) {
   const n = ICONS[name] || "moon.fill"
   if (n.startsWith("custom:")) return <CustomIcon kind={n.slice(7)} box={size * 1.25} color={color} />
-  return <Image systemName={n} font={size} foregroundStyle={color} />
+  return <Image systemName={n} font={size} fontWeight="medium" foregroundStyle={color} />
 }
 
 // ───────────── Changement à l'heure exacte ─────────────
