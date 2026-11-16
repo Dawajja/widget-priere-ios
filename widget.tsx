@@ -329,9 +329,11 @@ function CustomIcon({ kind, box, color: tint }: any) {
         <Circle fill={color} frame={{ width: 6.2 * u, height: 6.2 * u }} />
       </VStack>)
     const rays = [ray(2.3, 9.5, 3.6, 9.5), ray(12.4, 9.5, 13.7, 9.5), ray(3.9, 5.7, 4.9, 6.8), ray(12.1, 5.7, 11.1, 6.8)]
-    const arrow = kind === "chourouk"
-      ? [ray(8, 6.1, 8, 2.3), ray(6.5, 3.7, 8, 2.2), ray(9.5, 3.7, 8, 2.2)]
-      : [ray(8, 2.2, 8, 6), ray(6.5, 4.6, 8, 6.1), ray(9.5, 4.6, 8, 6.1)]
+    // flèche d'un seul tenant (symbole d'Apple) : trois traits qui se rejoignent se chevauchaient à la
+    // pointe, et en fond flou ce chevauchement ressortait plus blanc. Même hauteur (2,2 → 6,1) et même graisse.
+    const arrow = [at(8, 4.15, 4, 4.4,
+      <Image systemName={kind === "chourouk" ? "arrow.up" : "arrow.down"} font={4.4 * u} fontWeight="semibold"
+        foregroundStyle={color} frame={{ width: 4 * u, height: 4.4 * u }} />)]
     parts = [sun, horizon, ...rays, ...arrow]
   }
   return <Rectangle fill={tint} frame={{ width: box, height: box }}
