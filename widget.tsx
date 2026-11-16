@@ -288,7 +288,11 @@ function Countdown({ s, size, color, width, side = "trailing", weight = "regular
 // Icônes dessinées, sur une grille de 16 × 16 (même tracé que dans le simulateur).
 // Épaisseur unique (en points) de tous les traits des icônes
 const ICON_STROKE = 1.2
-function CustomIcon({ kind, box, color }: any) {
+function CustomIcon({ kind, box, color: tint }: any) {
+  // Les traits se chevauchent par endroits (pointe de la flèche, bouts des rayons). Avec une couleur
+  // transparente (gris du fond flou), ces chevauchements ressortiraient plus clairs. L'icône est donc
+  // dessinée en blanc plein comme pochoir, puis remplie d'un seul aplat de sa couleur.
+  const color = "#FFFFFF"
   const u = box / 16
   // même épaisseur de trait pour tous les traits de toutes les icônes, quelle que soit leur taille
   const W = ICON_STROKE / u
@@ -330,7 +334,8 @@ function CustomIcon({ kind, box, color }: any) {
       : [ray(8, 2.2, 8, 6), ray(6.5, 4.6, 8, 6.1), ray(9.5, 4.6, 8, 6.1)]
     parts = [sun, horizon, ...rays, ...arrow]
   }
-  return <ZStack frame={{ width: box, height: box }}>{parts}</ZStack>
+  return <Rectangle fill={tint} frame={{ width: box, height: box }}
+    mask={<ZStack frame={{ width: box, height: box }}>{parts}</ZStack>} />
 }
 
 // Vide entre le bord de la case et le trait le plus à gauche ou à droite de l'icône (en pt),
